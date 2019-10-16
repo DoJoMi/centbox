@@ -111,12 +111,12 @@ vim /etc/vsftpd/vsftpd.conf
 user_config_dir=/etc/vsftpd/vsftpd_user_conf/$USER
 
 mkdir -p /etc/vsftpd/vsftpd_user_conf/
-cat > /etc/vsftpd/vsftpd_user_conf/dojomi <<EOF
+cat > /etc/vsftpd/vsftpd_user_conf/dojomi <<eof
 dirlist_enable=YES
 download_enable=YES
 local_root=/ftp/virtual/dojomi
 write_enable=NO
-EOF
+eof
 ```
 
 some other usefull modifications

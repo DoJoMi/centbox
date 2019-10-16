@@ -11,7 +11,7 @@ yum install -y dhcp
 echo -e "192.168.1.100 ns-server.labs.local ns" >> /etc/hosts
 cp -p /etc/dhcp/dhcpd.conf /etc/dhcp/dhcpd.conf.bak
 cp -p /usr/share/doc/dhcp-4.2.5/dhcpd.conf.example /etc/dhcp/dhcpd.conf
-cat > /etc/dhcp/dhcpd.conf <<EOF
+cat > /etc/dhcp/dhcpd.conf <<eof
 option domain-name "labs.local"
 option domain-name-servers ns-server.labs.local; 
 default-release-time 600;
@@ -32,7 +32,7 @@ host centos {
  hardware ethernet 08:00:27:B6:6F:72;
  fixed-address 192.168.1.19;
 }
-EOF
+eof
 systemctl enable dhcpd; systemclt start dhcpd
 tail -f /var/lib/dhcpd/dhcpd.lease /var/log/messages
 Jun 18 18:24:05 localhost systemd: Started DHCPv4 Server Daemon.

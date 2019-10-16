@@ -60,11 +60,11 @@ cd /var/mail
 chown -R vpostfix:vpostfix vhosts 
 # all mails are delivered uneder  /var/mail/vhosts/labs.local/<virtual-user>
 # end up with / or mail will not delivered
-cat > /etc/postfix/vmailbox <<EOF
+cat > /etc/postfix/vmailbox <<eof
 dojomi@labs.local        labs.local/dojomi/
 admin@labs.local       labs.local/admin/
 @labs.local           labs.local/all/
-EOF
+eof
 # create virtual/local alias file   
 touch /etc/postfix/virtual && cd /etc
 postalias aliases
@@ -347,7 +347,7 @@ yum install -y httpd
 firewall-cmd --permanent --add-service http
 firewall-cmd --reload
 systemctl enable httpd; systemctl start httpd
-cat >> /etc/httpd/conf/httpd.conf <<EOF
+cat >> /etc/httpd/conf/httpd.conf <<eof
 Alias /webmail /usr/share/squirrelmail
 <Directory /usr/share/squirrelmail>
 Options Indexes FollowSymLinks
@@ -357,7 +357,7 @@ DirectoryIndex index.php
 Order allow,deny
 Allow from all
 </Directory>
-EOF
+eof
 systemctl restart httpd
 firefox 192.168.1.11/webmail
 # Error connecting to IMAP server: localhost.
@@ -383,7 +383,7 @@ cp -rv /etc/amavisd/amavisd.conf /etc/amavisd/amavisd.conf.bak
 vim /etc/amavisd/amavisd.conf
 $mydomain = 'labs.local';
 $myhostname = 'mail-server.labs.local';
-cat >> /etc/postfix/master.cf <<EOF
+cat >> /etc/postfix/master.cf <<eof
 $ # Amavisd
 amavisfeed unix - - n - 2 lmtp
         -o lmtp_data_done_timeout=1200
@@ -409,11 +409,11 @@ amavisfeed unix - - n - 2 lmtp
         -o smtpd_milters=
         -o local_recipient_maps=
         -o relay_recipient_maps=
-EOF
-cat >> /etc/postfix/main.cf <<EOF
+eof
+cat >> /etc/postfix/main.cf <<eof
 #use amavisd as filter on port 10024
 content_filter = amavisfeed:[127.0.0.1]:10024
-EOF
+eof
 systemctl enable spamassassin; systemctl start spamassassin
 systemctl enable amavisd; systemctl start amavisd
 systemctl restart postfix

@@ -7,7 +7,7 @@
 ```shell
 yum install -y ntp
 cp /etc/ntp.conf /etc/ntp.conf.bak
-cat > /etc/ntp.conf <<EOF
+cat > /etc/ntp.conf <<eof
 restrict default kod nomodify notrap nopeer noquery
 restrict -6 default kod nomodify notrap nopeer noquery
 restrict 127.0.0.1
@@ -18,7 +18,7 @@ server 2.at.pool.ntp.org iburst
 server 3.at.pool.ntp.org iburst
 driftfile /var/lib/ntp/ntp.drift
 logfile /var/log/ntp.log
-EOF
+eof
 
 # add firewall rule for clients
 firewall-cmd --permanent --add-service=ntp
@@ -42,7 +42,7 @@ ntpq -p
 ```shell
 yum install -y chrony
 cp /etc/crony.conf /etc/crony.conf.bak
-cat > /etc/crony.conf <<EOF
+cat > /etc/crony.conf <<eof
 # http://www.pool.ntp.org/zone/at
 server 0.at.pool.ntp.org
 server 1.at.pool.ntp.org
@@ -52,7 +52,7 @@ allow 192.168/24
 driftfile /etc/chrony.drift
 rtconutc
 rtcsync
-EOF
+eof
 
 systemctl start chronyd
 systemctl enable chronyd

@@ -54,10 +54,10 @@ flush privileges;
 user login file
 
 ```shell
-cat > .my.cnf <<EOF
+cat > .my.cnf <<eof
 user=dojomi
 password=secret
-EOF
+eof
 ```
 
 ### Master-Master Replication

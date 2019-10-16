@@ -34,10 +34,10 @@ ssh root@IP -i ~/.ssh/aclient_rsa
 # add remote host to /etc/ansible/hosts
 cp -rv /etc/ansible/hosts /etc/ansible/hosts.bak
 cat /dev/null > /etc/ansible/hosts
-cat >/etc/ansible/hosts<<EOF
+cat >/etc/ansible/hosts<<eof
 [aclient]
 192.168.1.18 
-EOF
+eof
 ansible -m ping aclient --private-key=~/.ssh/aclient
 ansible -m command -a 'df -h' aclient
 ansible -m command -a 'uptime' aclient
@@ -49,7 +49,7 @@ master
 
 ```shell
 mkdir ~/ansible_playbooks && touch ~/ansible_playbooks/httpd.yml 
-cat > ~/ansible_playbooks/httpd.yml << EOF
+cat > ~/ansible_playbooks/httpd.yml << eof
 ---
 - hosts: aclient
 vars:
@@ -66,7 +66,7 @@ vars:
   handlers:
     - name: restart apache
       service: name=httpd state=restarted
-EOF
+eof
 ansible-playbook ~/ansible_playbooks/httpd.yml --private-key=~/.ssh/aclient_rsa
 ```
 
@@ -88,9 +88,9 @@ systemctl restart systemd-hostnamed
 rpm -ivh https://yum.puppetlabs.com/el/7/products/x86_64/puppetlabs-release-7-11.noarch.rpm
 yum install -y ntp
 sed -i "s/^#restrict/restrict/" /etc/ntp.conf
-cat >> /etc/ntp.conf <<EOF
+cat >> /etc/ntp.conf <<eof
 logfile /var/log/ntp.log
-EOF
+eof
 firewall-cmd --add-service=ntp --permanent
 firewall-cmd --reload
 systemctl enable ntpd.service; systemctl start ntpd.service
@@ -100,10 +100,10 @@ echo "192.168.1.11 pmaster.labs.local pmaster" >> /etc/hosts
 echo "192.168.1.12 pclient.labs.local pclient" >> /etc/hosts
 systemctl enable puppetmaster.service; systemctl start puppetmaster.service
 puppet resource service puppetmaster ensure=running enable=true
-cat >> /etc/puppet/puppet.conf <<EOF
+cat >> /etc/puppet/puppet.conf <<eof
 [master]
     certname=pmaster.labs.local
-EOF
+eof
 systemctl restart puppetmaster.service
 netstat -ntlp
 firewall-cmd --permanent --add-port=8140/tcp
@@ -148,12 +148,12 @@ master
 
 ```shell
 touch /etc/puppet/manifest/site.pp
-cat > /etc/puppet/manifest/site.pp <<EOF
+cat > /etc/puppet/manifest/site.pp <<eof
 node 'pclient.labs.local'{
     package{'httpd': ensure => installed}
     service{'httpd': ensure => running, enable => true}
 }
-EOF
+eof
 ```
 
 node
@@ -175,10 +175,10 @@ yum clean expire-cache
 yum install salt-master
 echo "192.168.1.11 smaster.labs.local smaster" >> /etc/hosts
 echo "192.168.1.12 sminion.labs.local sminion" >> /etc/hosts
-cat > /etc/salt/master << EOF
+cat > /etc/salt/master << eof
 interface: 192.168.1.11
 hash_type: sha256
-EOF
+eof
 firewall-cmd --get-active-zones
 firewall-cmd --permanent --zone=public --add-port=4505-4506/tcp
 firewall-cmd --reload
@@ -195,10 +195,10 @@ systemctl restart systemd-hostnamed
 yum install https://repo.saltstack.com/yum/redhat/salt-repo-latest-2.el7.noarch.rpm
 yum clean expire-cache
 yum install salt-minion
-cat > /etc/salt/minion << EOF
+cat > /etc/salt/minion << eof
 master: 192.168.1.11
 hash_type: sha256
-EOF
+eof
 systemctl start salt-minion.service
 systemctl enable salt-minion.service
 echo "192.168.1.11 smaster.labs.local smaster" >> /etc/hosts

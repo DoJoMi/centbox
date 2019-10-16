@@ -60,20 +60,20 @@ yum install gitlab-ce -y
 gitlab-ctl reconfigure
 mkdir -p /var/www/public/letsencrypt
 cp /etc/gitlab/gitlab.rb /etc/gitlab/gitlab.rb.bak
-cat >> /etc/gitlab/gitlab.rb <<EOF
+cat >> /etc/gitlab/gitlab.rb <<eof
 web_server['home'] = '/var/opt/gitlab/nginx'
 nginx['custom_gitlab_server_config'] = "location ^~ /.well-known {
 root /var/www/public/letsencrypt;
 }"
-EOF
+eof
 gitlab-ctl reconfigure
 certbot certonly --webroot --webroot-path=/var/www/public/letsencrypt -d gitlab.k8s4.fun
 sed -i "s%external_url 'http://gitlab.example.com'%external_url 'https://gitlab.k8s4.fun'%" /etc/gitlab/gitlab.rb
-cat >> /etc/gitlab/gitlab.rb<<EOF
+cat >> /etc/gitlab/gitlab.rb<<eof
 nginx['redirect_http_to_https'] = true
 nginx['ssl_certificate'] = "/etc/letsencrypt/live/gitlab.k8s4.fun/fullchain.pem"
 nginx['ssl_certificate_key'] = "/etc/letsencrypt/live/gitlab.k8s4.fun/privkey.pem"
-EOF
+eof
 gitlab-ctl reconfigure
 # renew the certificate every month
 crontab -e
@@ -101,12 +101,12 @@ docker exec -it runner1 nano /etc/gitlab-runner/config.toml
 # container-registry
 # as an alternative harbor could be used as well
 certbot certonly --webroot --webroot-path=/var/www/public/letsencrypt -d registry.k8s4.fun
-cat >> /etc/gitlab/gitlab.rb <<EOF
+cat >> /etc/gitlab/gitlab.rb <<eof
 registry_external_url 'https://registry.k8s4.fun'
 registry_nginx['ssl_certificate'] = "/etc/letsencrypt/live/registry.k8s4.fun/fullchain.pem"
 registry_nginx['ssl_certificate_key'] = "/etc/letsencrypt/live/registry.k8s4.fun/privkey.pem"
-EOF
-cat >> /etc/hosts <<EOF <IP> registry.k8s4.fun EOF
+eof
+cat >> /etc/hosts <<eof <IP> registry.k8s4.fun eof
 gitlab-ctl reconfigure
 
 # change root-user-pwd

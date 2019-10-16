@@ -12,9 +12,9 @@ echo "192.168.1.12 centvm2.labs.local centvm2" >> /etc/hosts
 #kerberos requires time synchronization
 yum install -y ntp
 sed -i "s/^#restrict/restrict/" /etc/ntp.conf
-cat >> /etc/ntp.conf <<EOF
+cat >> /etc/ntp.conf <<eof
 logfile /var/log/ntp.log
-EOF
+eof
 firewall-cmd --add-service=ntp --permanent
 firewall-cmd --reload
 systemctl enable ntpd.service; systemctl start ntpd.service
@@ -33,7 +33,7 @@ centvm1
 ```shell
 yum install -y krb5-server krb5-libs
 cp -rv /etc/krb5.conf /etc/krb5.conf.bak
-cat > /etc/krb5.conf <<EOF
+cat > /etc/krb5.conf <<eof
 [logging]
  default = FILE:/var/log/krb5libs.log
  kdc = FILE:/var/log/krb5kdc.log
@@ -57,8 +57,8 @@ cat > /etc/krb5.conf <<EOF
 [domain_realm]
  .labs.local = LABS.LOCAL
  labs.local= LABS.LOCAL 
-EOF
-cat > /var/kerberos/krb5kdc/kdc.conf << EOF
+eof
+cat > /var/kerberos/krb5kdc/kdc.conf << eof
 [kdcdefaults]
  kdc_ports = 88
  kdc_tcp_ports = 88
@@ -71,23 +71,23 @@ cat > /var/kerberos/krb5kdc/kdc.conf << EOF
   admin_keytab = /var/kerberos/krb5kdc/kadm5.keytab
   supported_enctypes = aes256-cts:normal aes128-cts:normal des3-hmac-sha1:normal arcfour-hmac:normal camellia256-cts:normal camellia128-cts:normal des-hmac-sha1:normal des-cbc-md5:normal des-cbc-crc:normal
  }
-EOF
-cat > /var/kerberos/krb5kdc/kadm5.acl <<EOF
+eof
+cat > /var/kerberos/krb5kdc/kadm5.acl <<eof
 */admin@LABS.LOCAL  *
-EOF
+eof
 kdb5_util create -s -r LABS.LOCAL
 # Loading random data
 # nothing happens
 yum provides */ngnd
 yum install -y rng-tools
-cat > /usr/lib/systemd/rngd.service <<EOF
+cat > /usr/lib/systemd/rngd.service <<eof
 [Unit]
 Description=Hardware RNG Entropy Gatherer Daemon
 [Service]
 ExecStart=/sbin/rngd -f -r /dev/urandom
 [Install]
 WantedBy=multi-user.target
-EOF
+eof
 cp -rv /usr/lib/systemd/rngd.service /etc/systemd/system
 systemctl daemon-reload
 systemctl start rngd.service

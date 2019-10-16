@@ -10,10 +10,10 @@ systemctl start firewalld && systemctl enable firewalld
 mkdir /etc/openldap/ldif
 chown ldap. /etc/openldap/ldif
 cp /etc/openldap/ldap.conf /etc/openldap/ldap.conf.bak
-cat > /etc/openldap/ldap.conf <<EOF
+cat > /etc/openldap/ldap.conf <<eof
 base    dc=k8s4,dc=fun
 uri     ldap:///ldap.k8s4.fun
-EOF
+eof
 firewall-cmd --add-service=ldap --permanent
 firewall-cmd --reload
 systemctl enable slapd && systemctl start slapd
@@ -21,12 +21,12 @@ systemctl enable slapd && systemctl start slapd
 /usr/sbin/slappasswd -s admin -n > /etc/openldap/passwd
 # pw: admin
 # {SSHA}lufHuXC+s6i3hKzkwUgTFEcFfRTDqa58
-cat > /etc/openldap/ldif/cn\=config_admin_olcRootPW.ldif <<EOF
+cat > /etc/openldap/ldif/cn\=config_admin_olcRootPW.ldif <<eof
 dn: olcDatabase={2}hdb,cn=config
 changetype: modify
 add: olcRootPW
 olcRootPW: {SSHA}lufHuXC+s6i3hKzkwUgTFEcFfRTDqa58
-EOF
+eof
 ldapmodify -Y EXTERNAL -H ldapi:/// -f /etc/openldap/ldif/cn\=config_admin_olcRootPW.ldif
 
 # basic schemas
@@ -36,7 +36,7 @@ ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/openldap/schema/cosine.ldif
 ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/openldap/schema/nis.ldif
 ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/openldap/schema/inetorgperson.ldif
 
-cat > /etc/openldap/ldif/cn\=config_baseDN.ldif <<EOF
+cat > /etc/openldap/ldif/cn\=config_baseDN.ldif <<eof
 dn: olcDatabase={2}hdb,cn=config
 changetype: modify
 replace: olcSuffix
@@ -49,10 +49,10 @@ dn: olcDatabase={1}monitor,cn=config
 changetype: modify
 replace: olcAccess
 olcAccess: {0}to * by dn.base="gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth" read by dn.base="cn=ldapadm,dc=k8s4,dc=fun" read by * none
-EOF
+eof
 ldapmodify -Y EXTERNAL -H ldapi:/// -f/etc/openldap/ldif/cn\=config_baseDN.ldif
 
-cat > /etc/openldap/ldif/cn\=config_tree.ldif <<EOF
+cat > /etc/openldap/ldif/cn\=config_tree.ldif <<eof
 dn: dc=k8s4,dc=fun
 dc: k8s4
 o: k8s4.fun
@@ -71,11 +71,11 @@ ou: People
 dn: ou=Group,dc=k8s4,dc=fun
 objectClass: organizationalUnit
 ou: Group
-EOF
+eof
 ldapadd -x -D cn=ldapadm,dc=k8s4,dc=fun -W -f /etc/openldap/ldif/cn\=config_tree.ldif
 
 # create new user
-cat > /etc/openldap/ldif/cn\=config_tree.ldif <<EOF
+cat > /etc/openldap/ldif/cn\=config_tree.ldif <<eof
 dn: uid=dojomi,ou=People,dc=k8s4,dc=fun
 objectClass: top
 objectClass: account
@@ -93,7 +93,7 @@ shadowLastChange: 17058
 shadowMin: 0
 shadowMax: 99999
 shadowWarning: 7
-EOF
+eof
 ldapadd -x -D cn=ldapadm,dc=k8s4,dc=fun -W -f /etc/openldap/ldif/cn\=config_tree.ldif
 
 # assign pwd to the user
@@ -107,7 +107,7 @@ ldapsearch -H ldap://ldap.k8s4.fun:389 -x cn=dojomi -b dc=k8s4,dc=fun
 # delete entry
 ldapdelete -W -D "cn=ldapadm,dc=k8s4,dc=fun" "uid=dojomi,ou=People,dc=k8s4,dc=fun"
 
-cat > /etc/openldap/ldap.conf <<EOF
+cat > /etc/openldap/ldap.conf <<eof
 base    dc=k8s4,dc=fun
 uri     ldaps:///ldap.k8s4.fun
 uri     ldapi:///ldap.k8s4.fun
@@ -117,7 +117,7 @@ ssl on
 tls_checkpeer no
 TLS_CACERTDIR /etc/openldap/certs
 TLS_REQCERT allow
-EOF
+eof
 firewall-cmd --add-service=ldaps --permanent
 firewall-cmd --reload
 setsebool -P httpd_can_connect_ldap on
@@ -137,7 +137,7 @@ chown ldap. /etc/openldap/certs/server.key /etc/openldap/certs/server.crt /etc/o
 
 sed -i 's|SLAPD_URLS="ldapi:\/\/\/ ldap:\/\/\/"|SLAPD_URLS="ldapi:\/\/\/ ldap:\/\/\/ ldaps:\/\/\/"|' /etc/sysconfig/slapd
 
-cat > /etc/openldap/ldif/cn\=config_baseDN.ldif <<EOF
+cat > /etc/openldap/ldif/cn\=config_baseDN.ldif <<eof
 dn: cn=config
 changetype: modify
 replace: olcTLSCACertificateFile
@@ -161,7 +161,7 @@ olcReferral: ldaps://ldap.k8s4.fun
 replace: olcLogLevel
 olcLogLevel: stats
 
-EOF
+eof
 ldapmodify -Y EXTERNAL -H ldapi:/// -f/etc/openldap/ldif/cn\=config_baseDN.ldif
 slaptest -u
 systemctl restart slapd

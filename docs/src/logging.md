@@ -9,9 +9,9 @@ server
 ```shell
 nmcli general hostname cent01.labs.local
 systemctl restart systemd-hostnamed
-cat > /etc/hosts <<EOF
+cat > /etc/hosts <<eof
 192.168.1.11 cent02.labs.local cent02
-EOF
+eof
 cp -pv /etc/rsyslog.conf /etc/rsyslog.conf.bak
 vim /etc/rsyslog.conf
 # uncommend
@@ -40,9 +40,9 @@ client
 ```shell
 nmcli general hostname cent02.labs.local
 systemctl restart systemd-hostnamed
-cat > /etc/hosts <<EOF
+cat > /etc/hosts <<eof
 192.168.1.10 cent01.labs.local cent02
-EOF
+eof
 cp -pv /etc/rsyslog.conf /etc/rsyslog.conf.bak
 echo "*.* @@192.168.1.10:514" >> /etc/rsyslog.conf
 systemctl restart rsyslog.service

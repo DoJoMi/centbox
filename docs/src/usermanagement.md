@@ -187,9 +187,9 @@ sudo -l dojomi
 su -
 # not allowed
 usermod -G wheel dojomi
-cat >> /etc/pam.d/su <<EOF
+cat >> /etc/pam.d/su <<eof
 authrequired pam_wheel.so use_uid
-EOF
+eof
 sudo -l dojomi
 su -
 # mail forwarding

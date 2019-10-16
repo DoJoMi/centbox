@@ -62,21 +62,21 @@ systemctl enable httpd
 systemctl start httpd
 firewall-cmd --permanent --add-service=http
 firewall-cmd --reload
-cat > /etc/httpd/conf.d/server-status.conf <<EOF
+cat > /etc/httpd/conf.d/server-status.conf <<eof
 <Location /server-status>
     SetHandler server-status
     Order Deny,Allow
     Deny from all
     Allow from 127.0.0.1
 </Location>
-EOF
+eof
 $ pcs property set stonith-enabled=false
 $ pcs property set no-quorum-policy=ignore
 $ pcs property set default-resource-stickiness="INFINITY"
 $ pcs property list
 $ pcs resource create VirtIP IPaddr2 ip=192.168.1.100 cidr_netmask=24 op monitor interval=30s
 $ pcs resource
-$ cat > /var/www/html/index.html <<EOF
+$ cat > /var/www/html/index.html <<eof
 <html>
  <head>     
     <title>HaCluster</title>
@@ -85,7 +85,7 @@ $ cat > /var/www/html/index.html <<EOF
     <h1>node1.linuxhausen.net<h1>
  <body>
 <html>                    
-EOF
+eof
 ```
 
 node2
@@ -97,7 +97,7 @@ $ systemctl start httpd
 $ firewall-cmd --permanent --add-service=http
 $ firewall-cmd --reload
 
-$ cat > /var/www/html/index.html <<EOF
+$ cat > /var/www/html/index.html <<eof
 <html>
  <head>     
     <title>HaCluster</title>
@@ -106,7 +106,7 @@ $ cat > /var/www/html/index.html <<EOF
     <h1>node2.linuxhausen.net<h1>
  <body>
 <html>                    
-EOF
+eof
 ```
 
 node1
@@ -138,7 +138,7 @@ dnf install -y httpd
 systemctl enable httpd; systemctl start httpd
 firewall-cmd --permanent --add-service http
 firewall-cmd --reload
-cat > /var/www/html/index.html << EOF
+cat > /var/www/html/index.html << eof
 <html>
 <head>
     <title>Loadbalancing with NGINX</title>
@@ -147,7 +147,7 @@ cat > /var/www/html/index.html << EOF
     <h1>centvm1</h1>
 </body>
 </html>
-EOF
+eof
 
 curl http://localhost
 ```
@@ -164,7 +164,7 @@ dnf install -y httpd
 systemctl enable httpd; systemctl start httpd
 firewall-cmd --permanent --add-service http
 firewall-cmd --reload
-cat > /var/www/html/index.html << EOF
+cat > /var/www/html/index.html << eof
 <html>
 <head>
     <title>Loadbalancing with NGINX</title>
@@ -173,7 +173,7 @@ cat > /var/www/html/index.html << EOF
 <h1>centvm2</h1>
 </body>
 </html>
-EOF
+eof
 
 systemctl reload nginx
 curl http://localhost
@@ -186,7 +186,7 @@ dnf install -y nginx
 systemctl enable nginx; systemctl start nginx
 firewall-cmd --permanent --add-service http
 firewall-cmd --reload
-cat > /etc/nginx/nginx.conf<<EOF
+cat > /etc/nginx/nginx.conf<<eof
 http{
     upstream lbsite{
         server node1.kubeops.rocks;
@@ -198,7 +198,7 @@ server{
     }
 }
 }
-EOF
+eof
 
 systemctl reload nginx
 curl http://localhost

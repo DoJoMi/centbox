@@ -128,7 +128,7 @@ flush privileges;
 quit
 mysql -u root -p icinga2 < /usr/share/icinga2-ido-mysql/schema/mysql.sql
 
-cat > /etc/icinga2/features-available/ido-mysql.conf <<EOF
+cat > /etc/icinga2/features-available/ido-mysql.conf <<eof
 library "db_ido_mysql"  
 object IdoMysqlConnection "ido-mysql" {
 user = "icinga2"
@@ -136,7 +136,7 @@ password = "icinga-password"
 host = "localhost"
 database="icinga2"                                                                                                
 }
-EOF
+eof
 icinga2 feature enable ido-mysql
 systemctl restart icinga2
 ```

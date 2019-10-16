@@ -13,9 +13,9 @@ firewall-cmd --permanent --add-service dns
 firewall-cmd --reload
 yum install -y ntp
 sed -i "s/^#restrict/restrict/" /etc/ntp.conf
-cat >> /etc/ntp.conf <<EOF
+cat >> /etc/ntp.conf <<eof
 logfile /var/log/ntp.log
-EOF
+eof
 firewall-cmd --add-service=ntp --permanent
 firewall-cmd --reload
 systemctl enable ntpd.service; systemctl start ntpd.service
@@ -24,7 +24,7 @@ ntpdate || date
 cp -rv /etc/named.conf /etc/named.conf.bak
 cp -rv /var/named/named.localhost /var/named/fwdz-labs.local
 cp -rv /var/named/named.loopback /var/named/rvz-labs.local
-cat >> /etc/named.conf <<EOF
+cat >> /etc/named.conf <<eof
 zone "ns-server.labs.local" IN {
     type master;
     file "fwdz-labs.local"; #file is located in /var/named
@@ -36,9 +36,9 @@ zone "1.168.192.in-addr.arpa" IN {
     file "rvz-labs.local"; #file is located in /var/named
     allow-update { none; };
 };
-EOF
+eof
 named-checkconf /etc/named.conf
-cat > /var/named/fwdz-labs.local <<EOF
+cat > /var/named/fwdz-labs.local <<eof
 $TTL 1D
 @   IN SOA  ns-server.labs.local. root.labs.local.(
                     0   ; serial
@@ -56,10 +56,10 @@ web-server  IN  A 192.168.1.12
 
 mail    IN  CNAME   mail-server.labs.local.
 www     IN  CNAME   web-server.labs.local.
-EOF
+eof
 chown root:named /var/named/fwdz-labs.local
 named-checkzone labs.local /var/named/fwdz-labs.local
-cat > /var/named/rvz-labs.local <<EOF
+cat > /var/named/rvz-labs.local <<eof
 $TTL 1D
 @   IN SOA  ns-server.labs.local. root.labs.local.(
                     0   ; serial
@@ -74,7 +74,7 @@ $TTL 1D
 100 IN  PTR ns-server.labs.local.
 11 IN  PTR mail-server.labs.local.
 12 IN  PTR web-server.labs.local.
-EOF
+eof
 chown root:named /var/named/rvz-labs.local
 named-checkzone 1.168.192-addr.arpa /var/named/rvz-labs.local
 systemctl restart named
@@ -101,7 +101,7 @@ yum install -y unbound
 systemctl enable unbound; systemctl start unbound
 nmcli general hostname dns.labs.local
 systemctl restart systemd-hostnamed
-cat > /etc/unbound/unbound.conf <<EOF
+cat > /etc/unbound/unbound.conf <<eof
 server:
     verbosity: 1
     statistics-interval: 0
@@ -148,7 +148,7 @@ forward-zone:
     name:"."
     forward-addr: 8.8.8.8
     forward-addr: 8.8.4.4
-EOF
+eof
 unbound-checkconf
 systemctl restart unbound.service
 firewall-cmd --permantent -add-service=dns
@@ -162,12 +162,12 @@ client
 ```shell
 nmcli general hostname client.labs.local
 systemctl restart systemd-hostnamed
-cat >> /etc/hosts <<EOF
+cat >> /etc/hosts <<eof
 192.168.1.11 dns.labs.local dnssrv
-EOF
-cat >> /etc/sysconfig/network-scripts/ifcfg-enp0s3 <<EOF
+eof
+cat >> /etc/sysconfig/network-scripts/ifcfg-enp0s3 <<eof
 DNS1=192.168.1.11
-EOF
+eof
 yum install -y bind-utils || yum install -y ldns
 dig example.com || host -a example.com || drill example.com 
 drill labs.local

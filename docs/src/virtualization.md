@@ -29,7 +29,7 @@ brctl delbr virbr0
 uuidgen enp3s0 #--> e6b60243-e383-4566-9e66-aebf18628cda
 
 # set default connection enp3s0 to a static address
-cat > /etc/sysconfig/network-scripts/ifcfg-enp3s0 << EOF
+cat > /etc/sysconfig/network-scripts/ifcfg-enp3s0 << eof
 TYPE=Ethernet 
 BOOTPROTO=none 
 NM_CONROLLED=no
@@ -46,10 +46,10 @@ DEFROUTE=yes
 IPV4_FAILURE_FATAL=no
 IPV6INIT=no                                                                     
 BRIDGE=kvm
-EOF
+eof
 
 # setup a new virual bridge named kvm
-cat > /etc/sysconfig/network-scripts/ifcfg-kvm << EOF
+cat > /etc/sysconfig/network-scripts/ifcfg-kvm << eof
 NAME=kvm
 DEVICE=kvm
 TYPE=Bridge
@@ -62,7 +62,7 @@ NETMASK=255.255.255.0
 GATEWAY=192.168.1.1
 DNS1=192.168.0.1                                                                
 DNS2=8.8.8.8
-EOF
+eof
 
 echo "BRIDGE=kvm" >> /etc/sysconfig/network-scripts/ifcfg-enp3s0
 systemctl restart network.service

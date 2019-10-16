@@ -9,7 +9,7 @@ yum install -y clamav clamav-freshclam && freshclam
 ```
 
 ```shell
-cat > /home/$USER/clamav.sh <<EOF
+cat > /home/$USER/clamav.sh <<eof
 #!/bin/bash
 
 DATE=`date "+%Y%m%d"`
@@ -20,7 +20,7 @@ MAIL=$3
 /usr/bin/clamscan -ir $SCAN_DIR | tail | grep 'Infected' > $LOG_FILE
 mail -s "ClamAV-Log $DATE " $MAIL < $LOG_FILE
 rm $LOG_FILE
-EOF
+eof
 ```
 
 ```shell
@@ -33,14 +33,14 @@ crontab -e
 ```shell
 yum install -y epel-release && yum install -y fail2ban
 cp /etc/fail2ban/jail.conf /etc/fail2ban/jail.local
-cat > /etc/fail2ban/jail.local <<EOF
+cat > /etc/fail2ban/jail.local <<eof
 [DEFAULT]
 # Ban hosts for one hour:
 bantime = 3600
 [sshd]
 enabled = true
-EOF
-cat > /etc/fail2ban/jail.d/sshd.local <<EOF
+eof
+cat > /etc/fail2ban/jail.d/sshd.local <<eof
 [ssh-iptables]
 enabled  = true
 filter   = sshd
@@ -48,21 +48,21 @@ action   = iptables[name=SSH, port=ssh, protocol=tcp]
 logpath  = %(sshd_log)s
 maxretry = 3
 bantime = 86400
-EOF
+eof
 systemctl enable fail2ban && systemctl start fail2ban
 ```
 
 ```shell
 yum install -y denyhosts
 systemctl enable denyhosts
-cat > /etc/hosts.allow <<EOF
+cat > /etc/hosts.allow <<eof
 sshd: IP [192.168.1.]
 ALL : IP [192.168.1.]
 ALL : 127.0.0.1
-EOF   
-cat > /etc/hosts.deny <<EOF
+eof   
+cat > /etc/hosts.deny <<eof
 sshd: ALL
-EOF
+eof
 ```
 
 fail2ban-client
@@ -231,7 +231,7 @@ vpn-network : 10.8.0.0/24
 ```shell
 yum update -y && yum install epel-release -y && yum install -y openvpn easy-rsa firewalld
 systemctl enable firewalld && systemctl start firewalld
-cat > /etc/openvpn/server.conf <<EOF
+cat > /etc/openvpn/server.conf <<eof
 dev tun
 proto udp
 port 1194
@@ -278,18 +278,18 @@ push "dhcp-option DNS 8.8.4.4"
 # log
 log-append /var/log/openvpn.log
 verb 4
-EOF
+eof
 ```
 
 ```shell
 mkdir /etc/openvpn/ccd
-cat > /etc/openvpn/ccd/vpn-client-01 <<EOF
+cat > /etc/openvpn/ccd/vpn-client-01 <<eof
 # MULTI: bad source address from client [IP ADDRESS], packet dropped
 # iroute is only to tell the server at which client it should send traffic
 iroute 192.168.1.0 255.255.255.0
 # give the client always the same ip
 ifconfig-push 10.8.0.2 255.255.255.0
-EOF
+eof
 ```
 
 ```shell
@@ -313,9 +313,9 @@ cp pki/crl.pem /etc/openvpn/crl.pem
 ```
 
 ```shell
-cat > /etc/sysctl.conf <<EOF 
+cat > /etc/sysctl.conf <<eof 
 net.ipv4.ip_forward = 1 
-EOF
+eof
 sysctl -p
 firewall-cmd --add-service openvpn --permanent
 firewall-cmd --add-masquerade --permanent 
@@ -334,7 +334,7 @@ cp pki/private/vpn-client-01.key vpn-client-01-config/client.key
 cp pki/ta.key vpn-client-01-config/ta.key
 
 # add <IP-ADDRESS-OF-OPENVPN-SERVER> and Certificates
-cat > vpn-client-01-config/client.ovpn <<EOF
+cat > vpn-client-01-config/client.ovpn <<eof
 tls-client
 pull
 client
@@ -358,7 +358,7 @@ auth SHA256
 tls-version-min 1.2
 auth-nocache
 tun-mtu 1500
-EOF
+eof
 ```
 
 ```shell

@@ -43,8 +43,8 @@ cp -r /foo .
 ls | sort -n >> foo
 # show foo
 cat foo 
-# write until EOF into foo 
-cat > foo <<EOF foo EOF
+# write until eof into foo 
+cat > foo <<eof foo eof
 # cp foo with timestamp
 cp -p foo foo.$(date +%F)
 

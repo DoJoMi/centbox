@@ -7,9 +7,9 @@ hostname
 ```shell
 nmcli general hostname server.labs.local
 systemctl restart systemd-hostnamed
-cat > /etc/hosts <<EOF
+cat > /etc/hosts <<eof
 192.168.1.10 server.labs.local server
-EOF 
+eof 
 systemctl restart network.service
 ```
 
@@ -21,14 +21,14 @@ localectl status
 yum install -y system-config-language
 system-config-language
 # manual
-cat >/etc/locale.conf <<EOF
+cat >/etc/locale.conf <<eof
 LANG=en_US.utf8
 LC_NUMERIC=en_US.UTF-8
 LC_TIME=en_US.UTF-8
 LC_MONETARY=en_US.UTF-8
 LC_PAPER=en_US.UTF-8
 LC_MEASUREMENT=en_US.UTF-8
-EOF
+eof
 ```
 
 keyboard layout
@@ -47,7 +47,7 @@ localectl set-keymap de-latin1-nodeadkeys
 static IP-address
 
 ```shell
-cat >/etc/sysconfig/network-scripts/ifcfg-enp0s3 <<EOF
+cat >/etc/sysconfig/network-scripts/ifcfg-enp0s3 <<eof
 TYPE=Ethernet
 BOOTPROTO=none
 DEFROUTE=yes
@@ -69,7 +69,7 @@ NETMASK=255.255.255.0
 GATEWAY=192.168.1.1
 NETWORK=192.168.1.1
 DNS1=8.8.8.8
-EOF
+eof
 systecmtl restart network.service
 ```
 
@@ -77,9 +77,9 @@ ip forwarding
 
 ```shell
 # needed if use for gateway/vpn/dial-in
-cat > /etc/sysctl.conf <<EOF
+cat > /etc/sysctl.conf <<eof
 net.ipv4.ip_forward = 1
-EOF
+eof
 sysctl -p
 cat /proc/sys/net/ipv4/ip_forward
 ```
@@ -87,11 +87,11 @@ cat /proc/sys/net/ipv4/ip_forward
 disable ipv6 if it\'s not used
 
 ```shell
-cat > /etc/sysctl.conf << EOF
+cat > /etc/sysctl.conf << eof
 # add to the  last line
 net.ipv6.conf.all.disable_ipv6 = 1
 net.ipv6.conf.default.disable_ipv6 = 1 
-EOF
+eof
 sysctl -p
 ```
 
@@ -106,10 +106,10 @@ bash
 
 ```shell
 # everytime you login call .bashrc
-cat > ~./bash_profife <<EOF
+cat > ~./bash_profife <<eof
 [ -f ~/.bashrc ] && source ~/.bashrc
 [ -f ~/.profile ] && source ~/.profile
-EOF
+eof
 ```
 
 **For more configuration details** <https://github.com/DoJoMi/dotbash>

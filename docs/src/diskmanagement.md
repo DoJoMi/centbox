@@ -220,9 +220,9 @@ mkdir /media/raid5 && ln -s /media/raid5 /home/dojomi/Desktop
 mount -t ext4 /dev/md0 /media/raid5
 cat /proc/mdstat || mdadm -D /dev/md0
 # mount automatically 
-cat >> /etc/fstab <<EOF
+cat >> /etc/fstab <<eof
 /dev/md0    /media/raid5  ext4    defaults    0   0
-EOF
+eof
 ```
 
 ```shell

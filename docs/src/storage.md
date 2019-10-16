@@ -212,9 +212,9 @@ mount -t xfs /dev/mapper/vg_iscsi-lv_client /media/data_iscsi/
 yum install -y nfs-utils nfs4-acl-tools
 nmcli general hostname nfs.labs.local
 systemctl restart systemd-hostnamed
-cat > /etc/hosts <<EOF
+cat > /etc/hosts <<eof
 192.168.1.11 client.labs.local client
-EOF
+eof
 systemctl restart network.service
 systemctl list-unit-files | grep rpcbind
 systemctl enable rpcbind.service
@@ -235,9 +235,9 @@ firewall-cmd --reload
 yum install -y nfs-utils nfs4-acl-tools 
 nmcli general hostname client.labs.local
 systemctl restart systemd-hostnamed
-cat > /etc/hosts <<EOF
+cat > /etc/hosts <<eof
 192.168.1.10 nfs.labs.local nfs
-EOF
+eof
 systemctl restart network.service
 systemctl enable rpcbind.service
 systemctl start rpcbind.service 
@@ -305,7 +305,7 @@ systemctl enable smb.service nmb.service
 systemctl start smb.service nmb.service
 firewall-cmd --permanent --add-service=samba
 firewall-cmd --reload
-cat > /etc/samba/smb.conf <<EOF
+cat > /etc/samba/smb.conf <<eof
 [global]
     server string = %h *server* (Samba %v)
     workgroup = WORKGROUP
@@ -340,7 +340,7 @@ cat > /etc/samba/smb.conf <<EOF
     time server = yes 
     #outsourcing to file
     #vim /etc/samba/smbshared.conf
-EOF
+eof
 testpar
 smbstatus
 ```
@@ -348,7 +348,7 @@ smbstatus
 set printer and cdrom for all users
 
 ```shell
-cat >> /etc/samba/smb.conf <<EOF
+cat >> /etc/samba/smb.conf <<eof
 [printers]
     comment = Printers
     browseable = no
@@ -365,7 +365,7 @@ cat >> /etc/samba/smb.conf <<EOF
     path = /cdrom
     writable = no
     guest ok = yes
-EOF
+eof
 systemctl restart smb nmb
 ```
 
@@ -374,7 +374,7 @@ access to user home
 ```shell
 useradd -d /home/dojomi dojomi
 smbpasswd -a dojomi
-cat >> /etc/samba/smb.conf <<EOF
+cat >> /etc/samba/smb.conf <<eof
 [homes]
     comment = HomeDIR
     browseable = no 
@@ -382,7 +382,7 @@ cat >> /etc/samba/smb.conf <<EOF
     writeable = yes
     create mode = 0640
     directory mode = 0750
-EOF
+eof
 systemctl restart smb nmb
 ```
 
@@ -409,7 +409,7 @@ public share for all users
 ```shell
 mkdir /media/public
 chmod 0777 /media/public
-cat >> /etc/samba/smb.conf <<EOF
+cat >> /etc/samba/smb.conf <<eof
 [public]
     comment = PublicDIR
     path = /media/public/
@@ -417,7 +417,7 @@ cat >> /etc/samba/smb.conf <<EOF
     browseable = yes
     writeable = yes 
     # no=NT_STATUS_MEDIA_WRITE_PROTECTED
-EOF
+eof
 systemctl restart smb nmb
 ```
 
@@ -445,7 +445,7 @@ share specific folder for group
 ```shell
 mkdir /home/music
 chmod 0770 /home/music
-cat >> /etc/samba/smb.conf <<EOF
+cat >> /etc/samba/smb.conf <<eof
 [music]
     comment = MusicDIR
     path = /home/music
@@ -453,7 +453,7 @@ cat >> /etc/samba/smb.conf <<EOF
     create mask = 0765
     valid users = @users
     admin users = dojomi
-EOF
+eof
 systemctl restart smb nmb
 usermod -G users dojomi
 useradd -d /home/bob -s /bin/bash -G users -u 10002 bob

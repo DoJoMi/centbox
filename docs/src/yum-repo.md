@@ -36,13 +36,13 @@ systemctl enable httpd; systemctl start httpd
 mkdir /var/www/html/repo/
 rsync -avz rsync://centos.mirroraustria.at/CentOS/7.2.1511/os/x86_64/ /var/www/html/repo/
 cp -rv /etc/httpd/conf/httpd.conf /etc/httpd/conf/httpd.conf.bak
-cat >> /etc/httpd/conf/httpd.conf <<EOF
+cat >> /etc/httpd/conf/httpd.conf <<eof
 Alias /repo /var/www/html/repo/
 <Directory "/var/www/html/repo/">
  Options Indexes
  AllowOverride None
 </Directory>
-EOF
+eof
 systemctl restart httpd
 firefox 192.168.1.11/repo
 ```
@@ -50,14 +50,14 @@ firefox 192.168.1.11/repo
 client availability
 
 ```shell
-cat > /etc/yum.repos.d/labs.local.repo <<EOF
+cat > /etc/yum.repos.d/labs.local.repo <<eof
 [Labs.LocalRepo]
 name=labs.local CentOS Repo
 baseurl= 'http://192.168.1.11/repo'
 enabled=1
 gpgcheck=1
 gpgkey= 'http://192.168.1.11/repo/RPM-GPG-KEY-CentOS-7'
-EOF
+eof
 yum clean all
 yum install -y links
 ```
