@@ -1,8 +1,8 @@
-## Database
+# Database
 
 ------------------------------------------------------------------------
 
-# Mariadb
+## Mariadb
 
 ```shell
 nmcli general hostname db.labs.local
