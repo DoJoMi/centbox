@@ -16,9 +16,8 @@ systemctl restart mariadb
 mysql_secure_installation
 ```
 
-sample database
-
 ```shell
+# sample database
 mysql -u root -p
 create database music;
 use music;
@@ -31,9 +30,8 @@ select * from hiphop;
 select * from hiphop where singer='';
 ```
 
-create a user who can edit database
-
 ```shell
+# create a user who can edit database
 create user dojomi@'%' identified by 'secret';
 grant select,insert,update,delete on music.*to dojomi@'%';
 flush privileges;
@@ -43,17 +41,15 @@ system clear;
 show databases;
 ```
 
-change root pwd
-
 ```shell
+# change root pwd
 mysql -u root -p 'root'
 update mysql.user set password = password('new_pwd') where user = 'root';
 flush privileges;
 ```
 
-user login file
-
 ```shell
+# user login file
 cat > .my.cnf <<eof
 user=dojomi
 password=secret
@@ -62,9 +58,8 @@ eof
 
 ### Master-Master Replication
 
-dbmaster1
-
 ```shell
+# dbmaster1
 nmcli general hostname dbmaster1.labs.local
 systemctl restart systemd-hostnamed
 echo "192.168.1.13 dbmaster1.labs.local dbmaster1" >> /etc/hosts
@@ -95,9 +90,8 @@ show master status;
 # +------------------+----------+--------------+------------------+
 ```
 
-dbmaster2
-
 ```shell
+# dbmaster2
 nmcli general hostname dbmaster1.labs.local
 systemctl restart systemd-hostnamed
 echo "192.168.1.13 dbmaster1.labs.local dbmaster1" >> /etc/hosts
@@ -141,9 +135,8 @@ show master status;
 # +------------------+----------+--------------+------------------+
 ```
 
-dbmaster1
-
 ```shell
+# dbmaster1
 mysql -u root -p
 # change master to
 master_host='dbmaster2',
@@ -171,9 +164,8 @@ select * from music.hiphop;
 # +--------+--------------------+------------------------------+--------------+
 ```
 
-dbmaster2
-
 ```shell
+# dbmaster2
 select * from music.hiphop;
 # +--------+--------------------+------------------------------+--------------+
 # | singer | title              | yt                           | registration |
@@ -184,9 +176,8 @@ select * from music.hiphop;
 
 ### Master-Slave Replication
 
-dbmaster
-
 ```shell
+# dbmaster
 nmcli general hostname dbmaster.labs.local
 systemctl restart systemd-hostnamed
 echo "192.168.1.13 dbmaster.labs.local dbmaster" >> /etc/hosts
@@ -227,9 +218,8 @@ mysqldump music > music.sql
 scp music.sql root@dbslave:/root
 ```
 
-dbslave
-
 ```shell
+# dbslave
 nmcli general hostname dbmaster.labs.local
 systemctl restart systemd-hostnamed
 echo "192.168.1.13 dbmaster.labs.local dbmaster" >> /etc/hosts
@@ -258,9 +248,8 @@ $ show processlist;
 $ show master status\G;
 ```
 
-dbmaster
-
 ```shell
+# dbmaster
 mysql -u root -p
 insert into music.hiphop(registration,singer,title,yt)values(4,'The Fugees','Ready Or Not','https://youtu.be/aIXyKmElvv8');
 select * from music.hiphop;
@@ -274,9 +263,8 @@ select * from music.hiphop;
 # +-----------------+--------------------+------------------------------+--------------+
 ```
 
-dbslave
-
 ```shell
+# dbslave
 select * from music.hiphop;
 # +-----------------+--------------------+------------------------------+--------------+
 # | singer          | title              | yt                           | registration |
