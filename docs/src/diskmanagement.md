@@ -298,9 +298,8 @@ megacli -CfgSave -f raidcfg.txt -aN
 megacli -CfgRestore -f raidcfg.txt -aN
 ```
 
-**disk failure handling**
-
 ```shell
+# disk failure handling
 # -aN = adapter parameter f.e -a0
 # E:S = enclosure Device ID:slot Number ( [252:2] -a0 )
 

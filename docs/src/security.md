@@ -6,9 +6,7 @@
 
 ```shell
 yum install -y clamav clamav-freshclam && freshclam
-```
 
-```shell
 cat > /home/$USER/clamav.sh <<eof
 #!/bin/bash
 
@@ -21,9 +19,7 @@ MAIL=$3
 mail -s "ClamAV-Log $DATE " $MAIL < $LOG_FILE
 rm $LOG_FILE
 eof
-```
 
-```shell
 crontab -e
 0 3 * * 1-5 /home/$USER/clamav.sh
 ```
@@ -50,24 +46,22 @@ maxretry = 3
 bantime = 86400
 eof
 systemctl enable fail2ban && systemctl start fail2ban
-```
-
-```shell
 yum install -y denyhosts
 systemctl enable denyhosts
+
 cat > /etc/hosts.allow <<eof
 sshd: IP [192.168.1.]
 ALL : IP [192.168.1.]
 ALL : 127.0.0.1
-eof   
+eof
+
 cat > /etc/hosts.deny <<eof
 sshd: ALL
 eof
 ```
 
-fail2ban-client
-
 ```shell
+# fail2ban-client
 fail2ban-client -i
 fail2ban> status ssh
 fail2ban> set ssh unbanip 195.94.185.239
@@ -75,69 +69,60 @@ fail2ban> set ssh unbanip 195.94.185.239
 
 ## Iptables
 
-save rules
-
 ```shell
+# save rules
 iptables-save > /etc/iptables/rules.v4
 ```
 
-flush all rules and set default chain
-
 ```shell
+# flush all rules and set default chain
 iptables -F
 iptables -P INPUT DROP
 iptables -P FORWARD DROP
 iptables -P OUTPUT DROP
 ```
 
-show ruleset
-
 ```shell
+# show ruleset
 iptables -L -v
 iptables -L INPUT -v
 iptables -L -v -n
 ```
 
-block specific addresses
-
 ```shell
+# block specific addresses
 BLOCK_THIS_IP="x.x.x.x"
 iptables -A INPUT -s "$BLOCK_THIS_IP" -j DROP
 iptables -A INPUT -i eth0 -s "$BLOCK_THIS_IP" -j DROP
 iptables -A INPUT -i eth0 -p tcp -s "$BLOCK_THIS_IP" -j DROP
 ```
 
-allow incoming traffic
-
 ```shell
+# allow incoming traffic
 iptables -A INPUT -i eth0 -p tcp --dport 22 -m state --state NEW,ESTABLISHED -j ACCEPT
 iptables -A OUTPUT -o eth0 -p tcp --sport 22 -m state --state ESTABLISHED -j ACCEPT
 ```
 
-allow incoming from specific network
-
 ```shell
+# allow incoming from specific network
 iptables -A INPUT -i eth0 -p tcp -s 192.168.100.0/24 --dport 22 -m state --state NEW,ESTABLISHED -j ACCEPT
 iptables -A OUTPUT -o eth0 -p tcp --sport 22 -m state --state ESTABLISHED -j ACCEPT
 ```
 
-allow outgoing
-
 ```shell
+# allow outgoing
 iptables -A OUTPUT -o eth0 -p tcp -d 192.168.100.0/24 --dport 22 -m state --state NEW,ESTABLISHED -j ACCEPT
 iptables -A INPUT -i eth0 -p tcp --sport 22 -m state --state ESTABLISHED -j ACCEPT
 ```
 
-combine ruleset
-
 ```shell
+# combine ruleset
 iptables -A INPUT -i eth0 -p tcp -m multiport --dports 22,443 -m state --state NEW,ESTABLISHED -j ACCEPT
 iptables -A OUTPUT -o eth0 -p tcp -m multiport --sports 22,443 -m state --state ESTABLISHED -j ACCEPT
 ```
 
-loadbalancing traffic
-
 ```shell
+# loadbalancing traffic
 iptables -A PREROUTING -i eth0 -p tcp --dport 443 -m state --state NEW -m nth --counter 0 --every 3 --packet 0 -j DNAT --to-destination 192.168.1.101:443
 iptables -A PREROUTING -i eth0 -p tcp --dport 443 -m state --state NEW -m nth --counter 0 --every 3 --packet 1 -j DNAT --to-destination 192.168.1.102:443
 iptables -A PREROUTING -i eth0 -p tcp --dport 443 -m state --state NEW -m nth --counter 0 --every 3 --packet 2 -j DNAT --to-destination 192.168.1.103:443
@@ -147,9 +132,8 @@ iptables -A PREROUTING -i eth0 -p tcp --dport 443 -m state --state NEW -m nth --
 
 ### wireguard
 
-centvm1:
-
 ```shell
+# centvm1
 yum update -y && yum upgrade -y
 curl -Lo /etc/yum.repos.d/wireguard.repo https://copr.fedorainfracloud.org/coprs/jdoss/wireguard/repo/epel-7/jdoss-wireguard-epel-7.repo
 yum install -y epel-release && yum install wireguard-dkms wireguard-tools -y
@@ -179,9 +163,8 @@ wg
 wg set wg0 peer 8MlMjAyA75IkdSRLbgxUHE4UBcPZ9qf1xGgDxhVYtQ8= allowed-ips 192.168.0.2/32 endpoint 10.135.32.250:58977
 ```
 
-centvm2:
-
 ```shell
+# centvm2
 yum update -y && yum upgrade -y
 curl -Lo /etc/yum.repos.d/wireguard.repo https://copr.fedorainfracloud.org/coprs/jdoss/wireguard/repo/epel-7/jdoss-wireguard-epel-7.repo
 yum install -y epel-release && yum install wireguard-dkms wireguard-tools
@@ -226,9 +209,8 @@ wg
 
 ### openvpn
 
-vpn-network : 10.8.0.0/24
-
 ```shell
+# vpn-network : 10.8.0.0/24
 yum update -y && yum install epel-release -y && yum install -y openvpn easy-rsa firewalld
 systemctl enable firewalld && systemctl start firewalld
 cat > /etc/openvpn/server.conf <<eof
@@ -365,9 +347,8 @@ eof
 tar cvfz vpn-client-01-config.tgz vpn-client-01-config
 ```
 
-client-side
-
 ```shell
+# client-side
 yum install epel-release -y && yum install -y openvpn easy-rsa
 scp <user>@<host>:vpn-client-01-config.tgz <location>
 tar -xvzf /<location>/vpn-client-01-config.tgz

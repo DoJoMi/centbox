@@ -173,9 +173,8 @@ lxc-attach -n lxc_vm
 lxc-destroy -n lxc_vm
 ```
 
-LXC-Web-Panel
-
 ```shell
+# LXC-Web-Panel
 # installation script not working on centos
 git clone https://github.com/lxc-webpanel/LXC-Web-Panel.git
 mv LXC-Web-Panel/ /srv/lwp
