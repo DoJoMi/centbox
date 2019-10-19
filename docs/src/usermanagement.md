@@ -165,9 +165,8 @@ ls -A /etc/skel
 
 ## Privileges
 
-create a new root named admin
-
 ```shell
+# create a new root named admin
 useradd admin
 passwd admin
 usermod -G wheel admin
@@ -179,9 +178,8 @@ root:admin
 newaliases
 ```
 
-allow only members of wheel group to use su command
-
 ```shell
+# allow only members of wheel group to use su command
 useradd dojomi
 passwd dojomi
 sudo -l dojomi
@@ -198,17 +196,15 @@ sed -i "s/#root: marc/root: root dojomi"
 newaliases
 ```
 
-reduce user some priviliges
-
 ```shell
+# reduce user some priviliges
 visudo
 # Cmnd_Alias SHUTDOWN = /sbin/halt, /sbin/shutdown, /sbin/poweroff, /sbin/reboot, /sbin/init
 dojomi ALL=(ALL) ALL,!SHUTDOWN
 ```
 
-log sudo commands into a file
-
 ```shell
+# log sudo commands into a file
 visudo
 Defaults syslog=local1
 ```
