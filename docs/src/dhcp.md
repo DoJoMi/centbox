@@ -1,12 +1,11 @@
-## DHCP
+# DHCP
 
 ------------------------------------------------------------------------
 
 ## Basic Usage
 
-DNS (ns-server.labs.local)
-
 ```shell
+# DNS (ns-server.labs.local)
 yum install -y dhcp
 echo -e "192.168.1.100 ns-server.labs.local ns" >> /etc/hosts
 cp -p /etc/dhcp/dhcpd.conf /etc/dhcp/dhcpd.conf.bak

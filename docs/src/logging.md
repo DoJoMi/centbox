@@ -4,9 +4,8 @@
 
 ## rsyslog
 
-server
-
 ```shell
+# server
 nmcli general hostname cent01.labs.local
 systemctl restart systemd-hostnamed
 cat > /etc/hosts <<eof
@@ -35,9 +34,8 @@ firewall-cmd --reload
 systemctl restart rsyslog.service
 ```
 
-client
-
 ```shell
+# client
 nmcli general hostname cent02.labs.local
 systemctl restart systemd-hostnamed
 cat > /etc/hosts <<eof
@@ -48,9 +46,8 @@ echo "*.* @@192.168.1.10:514" >> /etc/rsyslog.conf
 systemctl restart rsyslog.service
 ```
 
-server
-
 ```shell
+# server
 ls -la /var/log/rsyslog/
 # drwx------. 2 root root   78 May 10 05:42 cent01
 # drwx------. 2 root root   61 May 10 05:45 cent02

@@ -2,9 +2,8 @@
 
 ------------------------------------------------------------------------
 
-hostname
-
 ```shell
+# hostname
 nmcli general hostname server.labs.local
 systemctl restart systemd-hostnamed
 cat > /etc/hosts <<eof
@@ -13,9 +12,8 @@ eof
 systemctl restart network.service
 ```
 
-locale language
-
 ```shell
+# locale language
 # add for german de_DE.UTF-8
 localectl status
 yum install -y system-config-language
@@ -31,9 +29,8 @@ LC_MEASUREMENT=en_US.UTF-8
 eof
 ```
 
-keyboard layout
-
 ```shell
+# keyboard layout
 yum insall -y system-config-keyboard
 system-config-keyboard
 # or
@@ -44,9 +41,8 @@ localectl list-keymaps | grep de-latin1
 localectl set-keymap de-latin1-nodeadkeys
 ```
 
-static IP-address
-
 ```shell
+# static IP-address
 cat >/etc/sysconfig/network-scripts/ifcfg-enp0s3 <<eof
 TYPE=Ethernet
 BOOTPROTO=none
@@ -73,9 +69,8 @@ eof
 systecmtl restart network.service
 ```
 
-ip forwarding
-
 ```shell
+# ip forwarding
 # needed if use for gateway/vpn/dial-in
 cat > /etc/sysctl.conf <<eof
 net.ipv4.ip_forward = 1
@@ -84,9 +79,8 @@ sysctl -p
 cat /proc/sys/net/ipv4/ip_forward
 ```
 
-disable ipv6 if it\'s not used
-
 ```shell
+# disable ipv6 if it\'s not used
 cat > /etc/sysctl.conf << eof
 # add to the  last line
 net.ipv6.conf.all.disable_ipv6 = 1
@@ -95,9 +89,8 @@ eof
 sysctl -p
 ```
 
-bash
-
 ```shell
+# bash
 # open at login but not graphical (f.e programs,environment variables)
 ~/.profile || ~/.bash_profile(only bash)
 # every time open terminal window (xterm) (f.e alias, functions)

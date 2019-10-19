@@ -26,9 +26,8 @@
 
 ## Network Repository
 
-web availability
-
 ```shell
+# web availability
 yum install httpd
 firewall-cmd --permanent --add-service http
 firewall-cmd --reload
@@ -47,9 +46,8 @@ systemctl restart httpd
 firefox 192.168.1.11/repo
 ```
 
-client availability
-
 ```shell
+# client availability
 cat > /etc/yum.repos.d/labs.local.repo <<eof
 [Labs.LocalRepo]
 name=labs.local CentOS Repo
@@ -62,9 +60,8 @@ yum clean all
 yum install -y links
 ```
 
-keeping up2date
-
 ```shell
+# keeping up2date
 crontab -e
 30 2 * * * rsync -avz rsync://centos.mirroraustria.at/CentOS/7.2.1511/os/x86_64/ /var/www/html/repo/
 ```

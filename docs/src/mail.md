@@ -4,9 +4,8 @@
 
 ## Postfix,Dovecot \[hash:BerkleyDB\],squirrelmail
 
-dns-configuration
-
 ```shell
+# dns-configuration
 # Forward zone for labs.local
 IN MX 10    mail-server.labs.local.
 mail-server.labs.local. IN A        192.168.1.11
@@ -15,9 +14,8 @@ mail-server.labs.local. IN A        192.168.1.11
 192.168.1.11        IN PTR  mail-server.labs.local.
 ```
 
-smtp
-
 ```shell
+# smtp
 yum install -y postfix cyrus-* telnet
 nmcli general hostname mail-server.labs.local
 systemctl restart systemd-hostnamed
@@ -95,9 +93,8 @@ ehlo localhost
 quit
 ```
 
-pop3/imap
-
 ```shell
+# pop3/imap
 yum install -y dovecot
 cp -rv /etc/dovecot/dovecot.conf /etc/dovecot/dovecot.conf.bak
 cp -rv /etc/dovecot/conf.d/10-auth.conf /etc/dovecot/conf.d/10-auth.conf.bak
@@ -184,9 +181,8 @@ tag OK Logout completed.
 Connection closed by foreign host.
 ```
 
-postfix with tls
-
 ```shell
+# postfix with tls
 # /etc/postfix/main.cf
 # TLS
 postconf -e 'smtpd_use_tls = yes'
@@ -238,9 +234,8 @@ ehlo localhost
 quit
 ```
 
-dovecot with ssl
-
 ```shell
+# dovecot with ssl
 # configure ssl-certificate
 cd /etc/pki/tls/certs 
 openssl genrsa -out server.key 1024
@@ -296,23 +291,17 @@ swaks --to dojomi@labs.local
 # ***   IO::Socket::INET6: getaddrinfo: Name or service not known
 ```
 
-add a new user
-
 ```shell
+# add a new user
 echo"<name>@labs.local       labs.local/<name>/" >> /etc/postfix/vmailbox
 doveadm pw -s SHA512-CRYPT >> /etc/dovecot/users
 <name>@lab.local:{SHA}::::
 ```
 
-graphical tool
-
-thunderbird
-
 ![image](https://raw.githubusercontent.com/DoJoMi/centbox/master/docs/img/mail/1.png)
 
-squirrelmail
-
 ```shell
+# squirrelmail
 yum install -y squirrelmail
 cd /usr/share/squirrelmail/config/
 ./conf.pl
@@ -443,9 +432,8 @@ ehlo localhost
 quit
 ```
 
-testing virus detection
-
 ```shell
+# testing virus detection
 yum install -y swaks
 # send mail with body --> file is stored inside /var/spool/amavisd/tmp/amavis change it under 
 swaks -f dojomi@labs.local -t admin@labs.local --body "X5O!P%@AP[4\PZX54(P^)7CC)7}$EICAR-STANDARD-ANTIVIRUS-TEST-FILE!$H+H*"
@@ -453,9 +441,8 @@ tail -f /var/log/maillog
 Jun  7 08:06:51 mail-server amavis[3343]: (03343-01) Blocked INFECTED (Eicar-Test-Signature) {DiscardedInternal,Quarantined}, MYNETS LOCAL [192.168.1.11]:51841 
 ```
 
-testing spam detection
-
 ```shell
+# testing spam detection
 # send mail with body --> file is stored inside /var/spool/amavisd/tmp/amavis
 swaks -f dojomi@labs.local -t admin@labs.local --body "XJS*C4JDBQADN1.NSBN3*2IDNEN*GTUBE-STANDARD-ANTI-UBE-TEST-EMAIL*C.34X"
 tail -f /var/log/maillog

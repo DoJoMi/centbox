@@ -4,9 +4,8 @@
 
 ## Glusterfs
 
-Storage Replication with 2 Bricks (centvm1 + centvm2)
-
 ```shell
+# Storage Replication with 2 Bricks (centvm1 + centvm2)
 # centvm1
 echo -e "192.168.1.11 centvm1 centvm1.labs.local" >> /etc/hosts
 echo -e "192.168.1.12 centvm2 centvm2.labs.local" >> /etc/hosts
@@ -49,9 +48,8 @@ gluster peer status
 mkdir /media/glustervol
 ```
 
-Brick1 (centvm1)
-
 ```shell
+# Brick1 (centvm1)
 #under sudo you have to use command force at the end
 gluster volume create glustervol replica 2 transport tcp centvm1:/data/brick/glustervol centvm2:/data/brick/glustervol
 gluster vol start glustervol
@@ -75,9 +73,8 @@ echo -e "centvm1:/glustervol /media/glustervol glusterfs defaults,_netdev 0 0" >
 touch /media/glustervol/new
 ```
 
-Brick2 (centvm2)
-
 ```shell
+# Brick2 (centvm2)
 mount -t glusterfs centvm2:/glustervol /media/glustervol
 ls -la /media/glustervol
 # iptables -F then it sync on my side
@@ -86,9 +83,8 @@ echo -e "centvm1:/glustervol /media/glustervol glusterfs defaults,_netdev 0 0" >
 gluster vol status
 ```
 
-Client (clientvm)
-
 ```shell
+# Client (clientvm)
 echo -e "192.168.1.11 centvm1 centvm1.labs.local" >> /etc/hosts
 echo -e "192.168.1.12 centvm2 centvm2.labs.local" >> /etc/hosts
 nmcli general hostname clientvm.labs.local
@@ -102,18 +98,16 @@ mount
 echo -e "centvm1:/glustervol /media/glustervol glusterfs defaults,_netdev 0 0" >> /etc/fstab
 ```
 
-Delete the created volume
-
 ```shell
+# Delete the created volume
 gluster vol stop glustervol
 gluster vol delete glustervol
 ```
 
 ## iscsi
 
-server-side
-
 ```shell
+# server-side
 yum install -y lvm2
 lsblk
 # NAME   MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
@@ -156,9 +150,8 @@ firewall-cmd --permanent --add-port=3260/tcp
 firewall-cmd --reload
 ```
 
-client-side
-
 ```shell
+# client-side
 yum install -y iscsi-initiator-utils lvm2
 vim /etc/iscsi/initiatorname.iscsi
 # InitiatorName=iqn.2016-04.virt.centos:srv
@@ -184,9 +177,8 @@ vim /etc/fstab
 # or use blkid for UUID
 ```
 
-server-side
-
 ```shell
+# server-side
 # reboot server once to get lvm entry from client-side
 reboot
 lsblk
@@ -206,9 +198,8 @@ mount -t xfs /dev/mapper/vg_iscsi-lv_client /media/data_iscsi/
 
 ## NFS
 
-*server*
-
 ```shell
+# server-side
 yum install -y nfs-utils nfs4-acl-tools
 nmcli general hostname nfs.labs.local
 systemctl restart systemd-hostnamed
@@ -229,9 +220,8 @@ firewall-cmd --add-service=nfs --permanent
 firewall-cmd --reload
 ```
 
-*client*
-
 ```shell
+# client-side
 yum install -y nfs-utils nfs4-acl-tools 
 nmcli general hostname client.labs.local
 systemctl restart systemd-hostnamed
@@ -243,11 +233,9 @@ systemctl enable rpcbind.service
 systemctl start rpcbind.service 
 ```
 
-*share a dir*
-
-*server*
-
 ```shell
+# share a directory
+# server-side
 mkdir /shome
 chmod 0777 /shome
 yum install -y policycoreutils-python
@@ -259,9 +247,8 @@ systemctl restart nfs-server
 showmount -e localhost
 ```
 
-*client*
-
 ```shell
+# client-side
 mkdir /media/shome
 mount -t nfs 192.168.1.10:/shome /media/shome
 # permanent
@@ -269,19 +256,16 @@ echo "192.168.1.10:/shome   /media/shome    nfs rw,sync,hard,intr 0 0" >> /etc/f
 mount
 ```
 
-*autofs*
-
-*server*
-
 ```shell
+# autofs
+# server-side
 mkdir -p /home/dojomi/{dir01,dir02}
 echo "/home/dojomi  192.168.1.10/24(rw,sync,no_root_squash,no_subtree_check)" >> /etc/exports
 exportfs -avr
 ```
 
-*client*
-
 ```shell
+# client-side
 yum install autofs -y
 systemctl list-unit-files | grep autofs
 systemctl enable autofs.service
@@ -296,9 +280,8 @@ ls -la
 
 ## Samba
 
-*server*
-
 ```shell
+# server-side
 yum install -y samba
 cp -ri /etc/samba/smb.conf /etc/samba/smb.conf.bak
 systemctl enable smb.service nmb.service
@@ -345,9 +328,8 @@ testpar
 smbstatus
 ```
 
-set printer and cdrom for all users
-
 ```shell
+# set printer and cdrom for all users
 cat >> /etc/samba/smb.conf <<eof
 [printers]
     comment = Printers
@@ -369,9 +351,8 @@ eof
 systemctl restart smb nmb
 ```
 
-access to user home
-
 ```shell
+# access to user home
 useradd -d /home/dojomi dojomi
 smbpasswd -a dojomi
 cat >> /etc/samba/smb.conf <<eof
@@ -386,9 +367,8 @@ eof
 systemctl restart smb nmb
 ```
 
-*client*
-
 ```shell
+# client-side
 yum install -y samba-client
 smbclient -N -L //192.168.1.10
 smbclient //192.168.1.10/dojomi -U dojomi
@@ -396,17 +376,15 @@ ls
 # NT_STATUS_ACCESS_DENIED listening \*
 ```
 
-*server*
-
 ```shell
+# server-side
 yum install -y policycoreutils-python
 getsebool -a | grep samba
 setsebool -P samba_enable_home_dirs on
 ```
 
-public share for all users
-
 ```shell
+# public share for all users
 mkdir /media/public
 chmod 0777 /media/public
 cat >> /etc/samba/smb.conf <<eof
@@ -421,9 +399,8 @@ eof
 systemctl restart smb nmb
 ```
 
-*client*
-
 ```shell
+# client-side
 smbclient -N -L //192.168.1.10
 smbclient //192.168.1.10/public
 ls 
@@ -431,18 +408,16 @@ mkdir new
 # NS_STATUS_ACCESS_DENIED making remote directory 
 ```
 
-*server*
-
 ```shell
+# sever-side
 ls -ldZ /media/public/
 semanage fcontext -a -t samba_share_t "/media/public(/.*)?" 
 restorecon -R /media/public
 systemctl restart smb nmb
 ```
 
-share specific folder for group
-
 ```shell
+# share specific folder for group
 mkdir /home/music
 chmod 0770 /home/music
 cat >> /etc/samba/smb.conf <<eof
@@ -461,9 +436,8 @@ smbpasswd -a bob
 chmod 0777 /home/music
 ```
 
-*client*
-
 ```shell
+# client-side
 smbclient -N -L //192.168.1.10
 smbclient //192.168.1.10/music -U bob
 ls 
@@ -471,25 +445,22 @@ mkdir new
 # NS_STATUS_ACCESS_DENIED making remote directory 
 ```
 
-*server*
-
 ```shell
+# server-side
 ls -ldZ /home/music
 semanage fcontext -a -t samba_share_t "/home/music(/.*)?" 
 restorecon -R /home/music
 ```
 
-mount share with cifs
-
 ```shell
+# mount share with cifs
 yum install -y cifs-utils
 mkdir -p /media/samba/music
 mount -t cifs //192.168.1.10/music /media/samba/public -o user=dojomi
 ```
 
-mount \@boot
-
 ```shell
+# mount \@boot
 mkdir /home/samba
 echo “username=dojomi” > /home/samba/.smbcredentials
 echo “password=samba_password” >> /home/samba/.smbcredentials

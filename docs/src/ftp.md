@@ -4,9 +4,8 @@
 
 ## VSFTP
 
-local user
-
 ```shell
+# local user
 yum install -y vsftpd
 # where are the files located
 rpm -qc vsftpd 
@@ -16,9 +15,8 @@ systemctl enable vsftpd
 systemctl start vsftpd
 ```
 
-logging
-
 ```shell
+# logging
 vim /etc/vsftpd/vsftpd.conf
 # xferlog_enable=YES
 # xferlog_file=/var/log/vsftpd.log 
@@ -35,9 +33,8 @@ sudo yum install -y tcpdump
 tcpdump 'src 192.168.1.2 and dst 192.168.1.11 and port ftp'
 ```
 
-testing
-
 ```shell
+# testing
 # allow connect user root
 vim /etc/vsftpd/ftpusers
 ##root
@@ -64,9 +61,8 @@ setsebool -P ftp_home_dir 1
 # ftp> 226 Transfer complete
 ```
 
-chroot user
-
 ```shell
+# chroot user
 vim /etc/vsftpd/vsftpd.conf
 # all users are jailed by default:
 # chroot_local_user=YES
@@ -103,9 +99,8 @@ ftp dojomi@192.168.1.11
 # 226 Directory send OK.
 ```
 
-specific users configurations
-
 ```shell
+# specific users configurations
 vim /etc/vsftpd/vsftpd.conf
 # write_enable=YES
 user_config_dir=/etc/vsftpd/vsftpd_user_conf/$USER
@@ -119,9 +114,8 @@ write_enable=NO
 eof
 ```
 
-some other usefull modifications
-
 ```shell
+# some other usefull modifications
 vim /etc/vsftpd/vsftpd.conf
 anonymous_enable=NO
 anon_uplad_enable=NO
@@ -137,9 +131,8 @@ max_clients=50
 max_per_ip=2 
 ```
 
-ssl
-
 ```shell
+# ssl
 mkdir /etc/ssl/private
 openssl req -x509 -nodes -days 365 -newkey rsa:1024 -keyout /etc/ssl/private/vsftpd.pem -out /etc/ssl/private/vsftpd.pem
 vim /etc/vsftpd/vsftpd.conf
@@ -163,9 +156,8 @@ systemctl restart vsftpd
 sftp://root@192.168.1.11
 ```
 
-virtual users with pam\_pwfile.so
-
 ```shell
+# virtual users with pam\_pwfile.so
 yum install -y httpd-tools
 # delete real user
 userdel -r dojomi
@@ -224,9 +216,8 @@ restorecon -R /ftp/virtual/*
 # 226 Directory send OK.
 ```
 
-virtual users with db4-utils
-
 ```shell
+# virtual users with db4-utils
 yum install epel-release -y
 yum install db4-utils db4 -y
 # add username and pwd one by one 
@@ -255,9 +246,8 @@ ftp dojomi@192.168.1.11
 # 230 Login successful.
 ```
 
-virtual users with mysql
-
 ```shell
+# virtual users with mysql
 yum install -y mariadb-server mariadb wget
 systemctl enable mariadb.service
 systemctl start mariadb.service

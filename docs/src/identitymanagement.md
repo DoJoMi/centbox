@@ -4,9 +4,8 @@
 
 ## Kerberos
 
-centvm1
-
 ```shell
+# centvm1
 echo "192.168.1.11 centvm1.labs.local centvm1" >> /etc/hosts
 echo "192.168.1.12 centvm2.labs.local centvm2" >> /etc/hosts
 #kerberos requires time synchronization
@@ -21,16 +20,14 @@ systemctl enable ntpd.service; systemctl start ntpd.service
 ntpq -p
 ```
 
-centvm2
-
 ```shell
+# centvm2
 echo "192.168.1.11 centvm1.labs.local centvm1" >> /etc/hosts
 echo "192.168.1.12 centvm2.labs.local centvm2" >> /etc/hosts
 ```
 
-centvm1
-
 ```shell
+# centvm1
 yum install -y krb5-server krb5-libs
 cp -rv /etc/krb5.conf /etc/krb5.conf.bak
 cat > /etc/krb5.conf <<eof
@@ -58,6 +55,7 @@ cat > /etc/krb5.conf <<eof
  .labs.local = LABS.LOCAL
  labs.local= LABS.LOCAL 
 eof
+
 cat > /var/kerberos/krb5kdc/kdc.conf << eof
 [kdcdefaults]
  kdc_ports = 88
@@ -72,14 +70,17 @@ cat > /var/kerberos/krb5kdc/kdc.conf << eof
   supported_enctypes = aes256-cts:normal aes128-cts:normal des3-hmac-sha1:normal arcfour-hmac:normal camellia256-cts:normal camellia128-cts:normal des-hmac-sha1:normal des-cbc-md5:normal des-cbc-crc:normal
  }
 eof
+
 cat > /var/kerberos/krb5kdc/kadm5.acl <<eof
 */admin@LABS.LOCAL  *
 eof
+
 kdb5_util create -s -r LABS.LOCAL
 # Loading random data
 # nothing happens
 yum provides */ngnd
 yum install -y rng-tools
+
 cat > /usr/lib/systemd/rngd.service <<eof
 [Unit]
 Description=Hardware RNG Entropy Gatherer Daemon
@@ -88,6 +89,7 @@ ExecStart=/sbin/rngd -f -r /dev/urandom
 [Install]
 WantedBy=multi-user.target
 eof
+
 cp -rv /usr/lib/systemd/rngd.service /etc/systemd/system
 systemctl daemon-reload
 systemctl start rngd.service
@@ -110,9 +112,8 @@ scp /etc/krb5.conf centvm2:/etc/krb5.conf
 scp /tmp/centvm2.labs.local centvm2:/tmp/centvm2.labs.local
 ```
 
-centvm2
-
 ```shell
+# centvm2
 yum install -y pam_krb5 krb5-workstation
 ktutil
 rkt /tmp/centvm2.labs.local

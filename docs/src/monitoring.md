@@ -51,9 +51,8 @@ rm -rf /root/nagios
 
 ## Icinga
 
-server
-
 ```shell
+# server
 echo "192.168.1.20 icinga.labs.local imaster" >> /etc/hosts
 yum install -y wget httpd mod_ssl gd gd-devel mariadb-server php-mysql php-xmlrpc gcc mariadb libdbi libdbi-devel libdbi-drivers libdbi-dbd-mysql
 useradd icinga
@@ -141,9 +140,8 @@ icinga2 feature enable ido-mysql
 systemctl restart icinga2
 ```
 
-install icinga2-web-interface
-
 ```shell
+# install icinga2-web-interface
 yum install -y httpd php-gd php-intl php-ZendFramework php-pear php-pdo php-soap php-ldap php-cli php-common php-devel php-mbstring php-mysql php-xml
 usermod -aG icingacmd apache
 yum install -y epel-release
@@ -200,9 +198,8 @@ restorecon -Rv "/etc/icingaweb2"
 
 Icinga2 - Remote Hosts
 
-master
-
 ```shell
+# master
 echo "192.168.1.20 ic1.labs.local imaster" >> /etc/hosts
 echo "192.168.1.21 ic2.labs.local inode" >> /etc/hosts
 icinga2 node wizard
@@ -240,9 +237,8 @@ firewall-cmd --permanent --add-port={5665/tcp,5665/udp}
 firewall-cmd --reload
 ```
 
-client
-
 ```shell
+# client
 echo "192.168.1.20 ic1.labs.local imaster" >> /etc/hosts
 echo "192.168.1.21 ic2.labs.local inode" >> /etc/hosts
 yum install -y epel-release
@@ -304,9 +300,8 @@ icinga2 node wizard
 systemctl restart icinga2
 ```
 
-master
-
 ```shell
+# master
 icinga2 node list
 icinga2 node update-config
 systemctl restart icinga2

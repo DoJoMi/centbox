@@ -1,8 +1,8 @@
-## Authentication
+# Authentication
 
 ------------------------------------------------------------------------
 
-# OpenLDAP
+## OpenLDAP
 
 ```shell
 yum install -y openldap compat-openldap openldap-clients openldap-servers openldap-servers-sql openldap-devel firewalld

@@ -4,27 +4,24 @@
 
 ## Pacemaker/Corosync
 
-basic configuration node1
-
 ```shell
+# basic configuration node1
 nmcli general hostname centvm1
 systemctl restart systemd-hostnamed
 echo "192.168.1.11 node1.linuxhausen.net centvm1" >> /etc/hosts
 echo "192.168.1.12 node2.linuxhausen.net centvm2" >> /etc/hosts
 ```
 
-basic configuration node2
-
 ```shell
+# basic configuration node2
 nmcli general hostname centvm2
 systemctl restart systemd-hostnamed
 echo "192.168.1.11 node1.linuxhausen.net centvm1" >> /etc/hosts
 echo "192.168.1.12 node2.linuxhausen.net centvm2" >> /etc/hosts
 ```
 
-node1
-
 ```shell
+# node1
 yum install -y pacemaker pcs
 systemctl enable pcsd.service
 systemctl start pcsd.service
@@ -35,9 +32,8 @@ firewall-cmd --permanent --add-service=high-availability
 firewall-cmd --reload
 ```
 
-node2
-
 ```shell
+# node2
 yum install -y pacemaker pcs
 systemctl enable pcsd.service
 systemctl start pcsd.service
@@ -48,9 +44,8 @@ firewall-cmd --permanent --add-service=high-availability
 firewall-cmd --reload
 ```
 
-node1
-
 ```shell
+# node1
 pcs cluster auth node1.linuxhausen.net node2.linuxhausen.net -u hacluster
 pcs cluster setup --name HACLUSTER node1.linuxhausen.net node2.linuxhausen.net --force
 pcs cluster enable --all
@@ -88,9 +83,8 @@ $ cat > /var/www/html/index.html <<eof
 eof
 ```
 
-node2
-
 ```shell
+# node2
 $ yum install -y httpd
 $ systemctl enable httpd
 $ systemctl start httpd
@@ -109,9 +103,8 @@ $ cat > /var/www/html/index.html <<eof
 eof
 ```
 
-node1
-
 ```shell
+# node1
 $ pcs resource create HTTPD apache configfile="/etc/httpd/conf/httpd.conf" statusurl="http://127.0.0.1/server-status" op monitor interval=30s
 $ pcs constraint colocation add Httpd with VirtIP INFINITY
 $ pcs constraint order VirtIP then Httpd
@@ -126,9 +119,8 @@ $ pcs cluster destroy
 
 ## Nginx-Loadbalancer
 
-node1
-
 ```shell
+# node1
 nmcli general hostname centvm1.kubeops.rocks
 systemctl restart systemd-hostnamed
 echo "192.168.1.11 node1.kubeops.rocks centvm1" >> /etc/hosts
@@ -152,9 +144,8 @@ eof
 curl http://localhost
 ```
 
-node2
-
 ```shell
+# node2
 nmcli general hostname centvm2.kubeops.rocks
 systemctl restart systemd-hostnamed
 echo "192.168.1.11 node1.kubeops.rocks centvm1" >> /etc/hosts
@@ -179,9 +170,8 @@ systemctl reload nginx
 curl http://localhost
 ```
 
-node3
-
 ```shell
+# node3
 dnf install -y nginx
 systemctl enable nginx; systemctl start nginx
 firewall-cmd --permanent --add-service http

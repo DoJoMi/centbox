@@ -1,8 +1,8 @@
-## Collaboration/Communication
+# Collaboration/Communication
 
 ------------------------------------------------------------------------
 
-# Harbor
+## Harbor
 
 ```shell
 yum install -y yum-utils device-mapper-persistent-data lvm2 vim wget
@@ -46,7 +46,7 @@ firefox https://harbor.k8s4.fun
 # adjust all relevant information inside harbor/harbor.cfg
 ```
 
-# Gitlab
+## Gitlab
 
 ```shell
 yum install epel-release certbot firewalld vim -y
@@ -117,7 +117,7 @@ user.password_confirmation = 'secret_pass'
 user.save!
 ```
 
-# Openfire XMPP/Jabber
+## Openfire XMPP/Jabber
 
 ```shell
 echo "192.168.1.15 xmpp.labs.local xmpp" >> /etc/hosts

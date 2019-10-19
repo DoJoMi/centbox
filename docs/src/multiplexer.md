@@ -20,7 +20,6 @@ yum -y install screen
 |    exit            |     delete                            |
 |:-------------------|--------------------------------------:|
 
-
 |:-------------------|--------------------------------------:|
 |    screen -x       |     share session with the same user  |
 |:-------------------|--------------------------------------:|
@@ -29,11 +28,9 @@ yum -y install screen
 ```shell
 # restore lost SSH Connection
 screen -R
-
 # there are several suitable screens on:
 2123.pts …
 3332.pts … 
-
 # then just type to restore
 screen -R 2123
 ```
