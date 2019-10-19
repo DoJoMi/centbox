@@ -86,7 +86,7 @@ awk '{print $1,$2}' foo
 awk -F: '{print $5}' foo
 ```
 
-# File-Permissions
+### File-Permissions
 
 ```shell
 suid owner group other
@@ -108,7 +108,7 @@ Read Only       100       4
 Read/Execute    101       5
 ```
 
-# Regex
+### Regex
 
 ```shell
 |:-------------------|---------------------:|
