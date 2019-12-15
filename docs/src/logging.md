@@ -52,3 +52,76 @@ ls -la /var/log/rsyslog/
 # drwx------. 2 root root   78 May 10 05:42 cent01
 # drwx------. 2 root root   61 May 10 05:45 cent02
 ```
+
+## graylog
+
+```shell
+yum update -y
+yum install -y java-1.8.0-openjdk-headless.x86_64 epel-release pwgen vim firewalld
+systemctl enable firewalld && systemctl start firewalld
+
+cat > /etc/yum.repos.d/mongodb-org-4.0.repo <<eof
+[mongodb-org-4.0]
+name=MongoDB Repository
+baseurl=https://repo.mongodb.org/yum/redhat/$releasever/mongodb-org/4.0/x86_64/
+gpgcheck=1
+enabled=1
+gpgkey=https://www.mongodb.org/static/pgp/server-4.0.asc
+eof
+
+yum install -y mongod-org
+systemctl daemon-reload && systemctl enable mongod.service && systemctl start mongod.service
+mongo --version
+# MongoDB shell version v4.0.13
+netstat -ntlp 
+# Active Internet connections (only servers)
+# Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name          
+# tcp        0      0 127.0.0.1:27017         0.0.0.0:*               LISTEN      28098/mongod
+
+rpm --import https://artifacts.elastic.co/GPG-KEY-elasticsearch
+cat > /etc/yum.repos.d/elasticsearch.repo <<eof
+[elasticsearch-6.x]
+name=Elasticsearch repository for 6.x packages
+baseurl=https://artifacts.elastic.co/packages/oss-6.x/yum
+gpgcheck=1
+gpgkey=https://artifacts.elastic.co/GPG-KEY-elasticsearch    
+enabled=1
+autorefresh=1
+type=rpm-md
+eof
+
+yum install -y elasticsearch-oss
+echo "action.auto_create_index: false" >> /etc/elasticsearch/elasticsearch.yml
+systemctl daemon-reload && systemctl enable elasticsearch.service && systemctl start elasticsearch.service
+
+rpm -Uvh https://packages.graylog2.org/repo/packages/graylog-3.1-repository_latest.rpm
+yum install -y graylog-server
+cp /etc/graylog/server/server.conf /etc/graylog/server/server.conf.bak
+sed -i "s/^password_secret = / password_secret = $(pwgen -N 1 -s 96)/g" /etc/graylog/server/server.conf
+
+echo -n "Enter Password: " && head -1 </dev/stdin | tr -d '\n' | sha256sum | cut -d" " -f1
+# Enter Password: graylog
+# 4bbdd5a829dba09d7a7ff4c1367be7d36a017b4267d728d31bd264f63debeaa6
+
+sed -i "s/^#root_timezone/root_timezone = UTC/g" /etc/graylog/server/server.conf
+systemctl daemon-reload && systemctl enable graylog-server.service && systemctl start graylog-server.service
+ss -nl | grep 9000
+
+echo "http_bind_address = ip-addr-of-server:9000" >> /etc/graylog/server/server.conf
+systemctl restart graylog-server
+
+firewall-cmd --zone=public --add-port=9000/tcp
+firewall-cmd --reload
+
+# Allow the web server to access the network:
+setsebool -P httpd_can_network_connect 1
+
+# Graylog REST API and web interface:
+semanage port -a -t http_port_t -p tcp 9000
+
+# Elasticsearch (only if the HTTP API is being used):
+semanage port -a -t http_port_t -p tcp 9200
+
+# Allow using MongoDB default port (27017/tcp):
+semanage port -a -t mongod_port_t -p tcp 27017
+```
