@@ -94,6 +94,7 @@ systemctl daemon-reload && systemctl enable elasticsearch.service && systemctl s
 rpm -Uvh https://packages.graylog2.org/repo/packages/graylog-3.1-repository_latest.rpm
 yum install -y graylog-server
 cp /etc/graylog/server/server.conf /etc/graylog/server/server.conf.bak
+yum install -y pwgen
 sed -i "s/^password_secret = / password_secret = $(pwgen -N 1 -s 96)/g" /etc/graylog/server/server.conf
 echo -n "Enter Password: " && head -1 </dev/stdin | tr -d '\n' | sha256sum | cut -d" " -f1
 # Enter Password: graylog
