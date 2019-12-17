@@ -75,7 +75,6 @@ netstat -ntlp
 # Active Internet connections (only servers)
 # Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name          
 # tcp        0      0 127.0.0.1:27017         0.0.0.0:*               LISTEN      28098/mongod
-
 rpm --import https://artifacts.elastic.co/GPG-KEY-elasticsearch
 cat > /etc/yum.repos.d/elasticsearch.repo <<eof
 [elasticsearch-6.x]
@@ -87,7 +86,6 @@ enabled=1
 autorefresh=1
 type=rpm-md
 eof
-
 yum install -y elasticsearch-oss
 echo "action.auto_create_index: false" >> /etc/elasticsearch/elasticsearch.yml
 systemctl daemon-reload && systemctl enable elasticsearch.service && systemctl start elasticsearch.service
