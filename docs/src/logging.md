@@ -57,12 +57,12 @@ ls -la /var/log/rsyslog/
 
 ```shell
 yum update -y
-yum install -y java-1.8.0-openjdk-headless.x86_64 epel-release pwgen vim firewalld
+yum install -y java-1.8.0-openjdk-headless.x86_64 epel-release vim firewalld
 systemctl enable firewalld && systemctl start firewalld
 cat > /etc/yum.repos.d/mongodb-org-4.0.repo <<eof
-[mongodb-org-4.2]
+[mongodb]
 name=MongoDB Repository
-baseurl=https://repo.mongodb.org/yum/redhat/$releasever/mongodb-org/4.2/x86_64/
+baseurl=http://repo.mongodb.org/yum/redhat/$releasever/mongodb-org/4.2/$basearch/
 gpgcheck=1
 enabled=1
 gpgkey=https://www.mongodb.org/static/pgp/server-4.2.asc
@@ -77,9 +77,9 @@ netstat -ntlp
 # tcp        0      0 127.0.0.1:27017         0.0.0.0:*               LISTEN      28098/mongod
 rpm --import https://artifacts.elastic.co/GPG-KEY-elasticsearch
 cat > /etc/yum.repos.d/elasticsearch.repo <<eof
-[elasticsearch-6.x]
-name=Elasticsearch repository for 6.x packages
-baseurl=https://artifacts.elastic.co/packages/oss-6.x/yum
+[elasticsearch-7.x]
+name=Elasticsearch repository for 7.x packages
+baseurl=https://artifacts.elastic.co/packages/oss-7.x/yum
 gpgcheck=1
 gpgkey=https://artifacts.elastic.co/GPG-KEY-elasticsearch    
 enabled=1
@@ -98,10 +98,9 @@ echo -n "Enter Password: " && head -1 </dev/stdin | tr -d '\n' | sha256sum | cut
 # Enter Password: graylog
 # 4bbdd5a829dba09d7a7ff4c1367be7d36a017b4267d728d31bd264f63debeaa6
 sed -i "s/^#root_timezone/root_timezone = UTC/g" /etc/graylog/server/server.conf
-systemctl daemon-reload && systemctl enable graylog-server.service && systemctl start graylog-server.service
-ss -nl | grep 9000
-echo "http_bind_address = ip-addr-of-server:9000" >> /etc/graylog/server/server.conf
-systemctl restart graylog-server
+echo "http_bind_address = graylog.kubeops.rocks:9000" >> /etc/graylog/server/server.conf
+systemctl daemon-reload && systemctl enable graylog-server.service
+systemctl start graylog-server
 firewall-cmd --zone=public --add-port=9000/tcp
 firewall-cmd --reload
 # Allow the web server to access the network:
