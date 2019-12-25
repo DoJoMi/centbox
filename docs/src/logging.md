@@ -57,9 +57,9 @@ ls -la /var/log/rsyslog/
 
 ```shell
 yum update -y
-yum install -y java-1.8.0-openjdk-headless.x86_64 epel-release vim firewalld
+yum install -y java-1.8.0-openjdk-headless.x86_64 epel-release vim firewalld curl policycoreutils
 systemctl enable firewalld && systemctl start firewalld
-cat > /etc/yum.repos.d/mongodb-org-4.0.repo <<eof
+cat > /etc/yum.repos.d/mongodb-org.repo <<\eof
 [mongodb]
 name=MongoDB Repository
 baseurl=http://repo.mongodb.org/yum/redhat/$releasever/mongodb-org/4.2/$basearch/
@@ -88,20 +88,26 @@ type=rpm-md
 eof
 yum install -y elasticsearch-oss
 echo "action.auto_create_index: false" >> /etc/elasticsearch/elasticsearch.yml
-systemctl daemon-reload && systemctl enable elasticsearch.service && systemctl start elasticsearch.service
+sed -i "s/^elasticsearch_shards = 4/elasticsearch_shards = 1/g " /etc/elasticsearch/elasticsearch.yml
+systemctl daemon-reload && systemctl enable elasticsearch.service
+systemctl start elasticsearch.service
 rpm -Uvh https://packages.graylog2.org/repo/packages/graylog-3.1-repository_latest.rpm
 yum install -y graylog-server
 cp /etc/graylog/server/server.conf /etc/graylog/server/server.conf.bak
 yum install -y pwgen
-sed -i "s/^password_secret = / password_secret = $(pwgen -N 1 -s 96)/g" /etc/graylog/server/server.conf
+secret = $(pwgen -N 1 -s 96)
+sed -i "s/^password_secret = / password_secret = $secret/g" /etc/graylog/server/server.conf
 echo -n "Enter Password: " && head -1 </dev/stdin | tr -d '\n' | sha256sum | cut -d" " -f1
 # Enter Password: graylog
 # 4bbdd5a829dba09d7a7ff4c1367be7d36a017b4267d728d31bd264f63debeaa6
-sed -i "s/^#root_timezone/root_timezone = UTC/g" /etc/graylog/server/server.conf
-echo "http_bind_address = graylog.kubeops.rocks:9000" >> /etc/graylog/server/server.conf
+sed -i "s/^root_password_sha2 = / root_password_sha2 = 4bbdd5a829dba09d7a7ff4c1367be7d36a017b4267d728d31bd264f63debeaa6/g" /etc/graylog/server/server.conf
+ip = $(ip a | grep inet | tail -3 | head -1 | awk '{print $2}' | awk -F / '{print $1}')
+echo "http_bind_address = $ip:9000" >> /etc/graylog/server/server.conf
 systemctl daemon-reload && systemctl enable graylog-server.service
 systemctl start graylog-server
-firewall-cmd --zone=public --add-port=9000/tcp
+firewall-cmd --zone=public --add-port=9000/tcp --permanent
+firewall-cmd --zone=public --add-port=12900/tcp --permanent??
+firewall-cmd --zone=public --add-port=1514/tcp --permanent??
 firewall-cmd --reload
 # Allow the web server to access the network:
 setsebool -P httpd_can_network_connect 1
