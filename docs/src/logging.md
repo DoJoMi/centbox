@@ -69,12 +69,6 @@ gpgkey=https://www.mongodb.org/static/pgp/server-4.2.asc
 eof
 yum install -y mongodb-org-4.2.2 mongodb-org-server-4.2.2 mongodb-org-shell-4.2.2 mongodb-org-mongos-4.2.2 mongodb-org-tools-4.2.2
 systemctl daemon-reload && systemctl enable mongod.service && systemctl start mongod.service
-mongo --version
-# MongoDB shell version v4.0.13
-netstat -ntlp 
-# Active Internet connections (only servers)
-# Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name          
-# tcp        0      0 127.0.0.1:27017         0.0.0.0:*               LISTEN      28098/mongod
 rpm --import https://artifacts.elastic.co/GPG-KEY-elasticsearch
 cat > /etc/yum.repos.d/elasticsearch.repo <<eof
 [elasticsearch-7.x]
@@ -88,26 +82,24 @@ type=rpm-md
 eof
 yum install -y elasticsearch-oss
 echo "action.auto_create_index: false" >> /etc/elasticsearch/elasticsearch.yml
-sed -i "s/^elasticsearch_shards = 4/elasticsearch_shards = 1/g " /etc/elasticsearch/elasticsearch.yml
 systemctl daemon-reload && systemctl enable elasticsearch.service
 systemctl start elasticsearch.service
 rpm -Uvh https://packages.graylog2.org/repo/packages/graylog-3.1-repository_latest.rpm
 yum install -y graylog-server
 cp /etc/graylog/server/server.conf /etc/graylog/server/server.conf.bak
 yum install -y pwgen
-secret = $(pwgen -N 1 -s 96)
-sed -i "s/^password_secret = / password_secret = $secret/g" /etc/graylog/server/server.conf
-echo -n "Enter Password: " && head -1 </dev/stdin | tr -d '\n' | sha256sum | cut -d" " -f1
-# Enter Password: graylog
+secret=$(pwgen -N 1 -s 96)
+sed -i "s/^password_secret =/password_secret = $secret/g" /etc/graylog/server/server.conf
+root_password_sha2=$(echo -n && head -1 </dev/stdin | tr -d '\n' | sha256sum | cut -d" " -f1)
+# graylog
 # 4bbdd5a829dba09d7a7ff4c1367be7d36a017b4267d728d31bd264f63debeaa6
-sed -i "s/^root_password_sha2 = / root_password_sha2 = 4bbdd5a829dba09d7a7ff4c1367be7d36a017b4267d728d31bd264f63debeaa6/g" /etc/graylog/server/server.conf
-ip = $(ip a | grep inet | tail -3 | head -1 | awk '{print $2}' | awk -F / '{print $1}')
+sed -i "s/^root_password_sha2 =/root_password_sha2 = $root_password_sha2/g" /etc/graylog/server/server.conf
+ip=$(ip a | grep inet | tail -3 | head -1 | awk '{print $2}' | awk -F / '{print $1}')
 echo "http_bind_address = $ip:9000" >> /etc/graylog/server/server.conf
+sed -i "s/^elasticsearch_shards = 4/elasticsearch_shards = 1/g " /etc/graylog/server/server.conf
 systemctl daemon-reload && systemctl enable graylog-server.service
 systemctl start graylog-server
 firewall-cmd --zone=public --add-port=9000/tcp --permanent
-firewall-cmd --zone=public --add-port=12900/tcp --permanent??
-firewall-cmd --zone=public --add-port=1514/tcp --permanent??
 firewall-cmd --reload
 # Allow the web server to access the network:
 setsebool -P httpd_can_network_connect 1
