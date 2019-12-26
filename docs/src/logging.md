@@ -109,4 +109,13 @@ semanage port -a -t http_port_t -p tcp 9000
 semanage port -a -t http_port_t -p tcp 9200
 # Allow using MongoDB default port (27017/tcp):
 semanage port -a -t mongod_port_t -p tcp 27017
+
+![](https://raw.githubusercontent.com/DoJoMi/centbox/master/docs/img/logging/1.png)
+
+![](https://raw.githubusercontent.com/DoJoMi/centbox/master/docs/img/logging/2.png)
+
+![](https://raw.githubusercontent.com/DoJoMi/centbox/master/docs/img/logging/3.png)
+
+![](https://raw.githubusercontent.com/DoJoMi/centbox/master/docs/img/logging/4.png)
+
 ```
