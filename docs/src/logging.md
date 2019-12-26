@@ -109,6 +109,7 @@ semanage port -a -t http_port_t -p tcp 9000
 semanage port -a -t http_port_t -p tcp 9200
 # Allow using MongoDB default port (27017/tcp):
 semanage port -a -t mongod_port_t -p tcp 27017
+```
 
 ![](https://raw.githubusercontent.com/DoJoMi/centbox/master/docs/img/logging/1.png)
 
@@ -117,5 +118,14 @@ semanage port -a -t mongod_port_t -p tcp 27017
 ![](https://raw.githubusercontent.com/DoJoMi/centbox/master/docs/img/logging/3.png)
 
 ![](https://raw.githubusercontent.com/DoJoMi/centbox/master/docs/img/logging/4.png)
+
+```shell
+echo "*.info;mail.none;authpriv.none;cron.none @$ip:1514" >>/etc/rsyslog.conf
+systemctl restart rsyslog
+firewall-cmd --add-masquerade --permanent
+firewall-cmd --add-forward-port=port=514:proto=udp:toport=1514 --permanent
+firewall-cmd --permanent --add-port=1514/udp
+firewall-cmd --reload
+```
 
 ```
