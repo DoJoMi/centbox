@@ -127,5 +127,3 @@ firewall-cmd --add-forward-port=port=514:proto=udp:toport=1514 --permanent
 firewall-cmd --permanent --add-port=1514/udp
 firewall-cmd --reload
 ```
-
-```
